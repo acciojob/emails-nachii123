@@ -31,37 +31,35 @@ public class Email {
         // 3. It contains at least one lowercase letter
         // 4. It contains at least one digit
         // 5. It contains at least one special character. Any character apart from alphabets and digits is a special character
-        if(newPassword.length()>=8 && newPassword.equals(oldPassword) && newPassword.matches(".*[A-Z].*") && newPassword.matches(".*[a-z].*") && newPassword.matches(".*[^A-Za-z09].*") && newPassword.matches(".*\\d.*") && newPassword.matches(".*[^A-Za-z09].*")){
-            this.password = newPassword;
+        if(password.equals(oldPassword)){
+            if(isValidPass(newPassword)){
+                this.password = newPassword;
+            }
         }
-//        if(!newPassword.equals(oldPassword)){
-//            System.out.println("Invalid old, Password not changed..");
-//            return;
-//        }
-//
-//        if (!newPassword.matches(".*[A-Z].*")){
-//            System.out.println("Password should contain at least one uppercase letter.");
-//            return;
-//        }
-//
-//        if(!newPassword.matches(".*[a-z].*")){
-//            System.out.println("Password should contain at least one lowercase letter.");
-//            return;
-//        }
-//
-//        if(!newPassword.matches(".*\\d.*")){
-//            System.out.println("Password should contain at least one digit.");
-//            return;
-//        }
-//
-//        if(!newPassword.matches(".*[^A-Za-z09].*")){
-//            System.out.println("Password should contain at least one special character.");
-//            return;
-//        }
-//
-//        this.password = newPassword;
+//        this.password = newPassword
+    }
+    private boolean isValidPass(String newPassword){
+        boolean containsUppercase = false;
+        boolean containsLowercase = false;
+        boolean containsDigit = false;
+        boolean containsSpecialChar = false;
+        if(newPassword.length() < 8) return false;
+        for(int i =0; i<newPassword.length(); i++){
+            char val = newPassword.charAt(i);
+            if(val >= 'A' && val <='Z') {
+                containsUppercase = true;
+            }else if(val >='0' && val <='9'){
+                containsDigit = true;
+            }else if (val >='a' && val <='z'){
+                containsLowercase = true;
+            }else{
+                containsSpecialChar = true;
+            }
 
-
-
+        }
+        if(containsUppercase && containsLowercase& containsDigit& containsSpecialChar){
+            return true;
+        }
+        return false;
     }
 }

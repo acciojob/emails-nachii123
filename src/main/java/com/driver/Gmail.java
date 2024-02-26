@@ -6,8 +6,8 @@ import java.util.Date;
 public class Gmail extends Email {
 
     int inboxCapacity;
-    private ArrayList<Mail> inbox;
-    private ArrayList<Mail> trash;//maximum number of mails inbox can store
+    private ArrayList<Address> inbox;
+    private ArrayList<Address> trash;//maximum number of mails inbox can store
     //Inbox: Stores mails. Each mail has date (Date), sender (String), message (String). It is guaranteed that message is distinct for all mails.
     //Trash: Stores mails. Each mail has date (Date), sender (String), message (String)
     public Gmail(String emailId, int inboxCapacity) {
@@ -24,18 +24,27 @@ public class Gmail extends Email {
         // It is guaranteed that:
         // 1. Each mail in the inbox is distinct.
         // 2. The mails are received in non-decreasing order. This means that the date of a new mail is greater than equal to the dates of mails received already.
-      if(inbox.size()>= inboxCapacity){
+      if(inbox.size()>= getInboxCapacity()){
           trash.add(inbox.remove(0));
       }
-      inbox.add(new Mail(date,sender,message));
+      inbox.add(new Address(date,sender,message));
     }
 
     public void deleteMail(String message){
         // Each message is distinct
         // If the given message is found in any mail in the inbox, move the mail to trash, else do nothing
-        for(int i=0;i<inbox.size();i++){
-            if(inbox.get(i).equals(message)){
+//        for(int i=0;i<inbox.size();i++){
+//            if(inbox.get(i).equals(message)){
+//                inbox.remove(i);
+//            }
+//        }
+        for(int i=0; i<inbox.size();i++){
+            Address m = inbox.get(i);
+
+            if(m.message.equals(message)){
+                trash.add(m);
                 inbox.remove(i);
+                return;
             }
         }
 
@@ -45,20 +54,20 @@ public class Gmail extends Email {
         // If the inbox is empty, return null
         // Else, return the message of the latest mail present in the inbox
         int n= inbox.size();
-        if(inbox.isEmpty()){
+        if(inbox.size() ==0){
             return null;
         }
-        return inbox.get(n-1).toString();
+        return inbox.get(n-1).message;
 
     }
 
     public String findOldestMessage(){
         // If the inbox is empty, return null
         // Else, return the message of the oldest mail present in the inbox
-        if(inbox.isEmpty()){
+        if(inbox.size()==0){
             return null;
         }
-        return inbox.get(0).getMessage();
+        return inbox.get(0).message;
     }
 
     public int findMailsBetweenDates(Date start, Date end){
@@ -74,14 +83,12 @@ public class Gmail extends Email {
 //            }
         int count = 0;
 
-        for (Mail mail : inbox) {
-            if ((mail.getDate().after(start) || mail.getDate().equals(start)) &&
-                    (mail.getDate().before(end) || mail.getDate().equals(end))) {
-                count++;
-            }
-        }
-
-
+       for(int i=0; i<inbox.size(); i++){
+           Address m = inbox.get(i);
+           if(m.date.compareTo(start) >=0 && m.date.compareTo(end) <=0){
+               count++;
+           }
+       }
         return count;
 
     }
@@ -100,15 +107,29 @@ public class Gmail extends Email {
 
     public void emptyTrash(){
         // clear all mails in the trash
-        int n= trash.size();
-        for(int i=0;i<n;i++){
-            trash.remove(i);
-        }
+//        int n= trash.size();
+//        for(int i=0;i<n;i++){
+//            trash.remove(i);
+//        }
+        trash.clear();
 
     }
 
     public int getInboxCapacity() {
         // Return the maximum number of mails that can be stored in the inbo
-        return inboxCapacity;
+        return this.inboxCapacity;
+    }
+    
+    private class Address{
+        String sender;
+        Date date;
+        String message;
+        Address(Date date, String sender,String message){
+            this.date = date;
+            this.sender = sender;
+            this.message = message;
+        }
+
+
     }
 }
